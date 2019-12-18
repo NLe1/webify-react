@@ -44,17 +44,17 @@ class BrowsePage extends Component {
         </h1>
         <h5 className="mr-4  pb-0 mb-0 d-inline ">
           <Link to="/dashboard/browse/genres" style={{ color: "#d1cdcd" }}>
-            Genres
+            GENRES & MOODS
           </Link>
         </h5>
         <h5 className="mr-4  pb-0 mb-0 d-inline ">
           <Link to="/dashboard/browse/charts" style={{ color: "#d1cdcd" }}>
-            Charts
+            CHARTS
           </Link>
         </h5>
         <h5 className="mr-4  pb-0 mb-0 d-inline ">
           <Link to="/dashboard/browse/discovers" style={{ color: "#d1cdcd" }}>
-            Discover
+            DISCOVER
           </Link>
         </h5>
         <hr style={{ borderColor: "white" }} />
@@ -69,16 +69,13 @@ const mapStateToProps = state => ({
   errors: state.errors
 });
 
-export default connect(
-  mapStateToProps,
-  {
-    authenticateUser,
-    getCategories,
-    getCharts,
-    logoutUser,
-    getNewReleases,
-    getUserSavedTracks,
-    getUserSavedAlbums,
-    getUserFollowedArtists
-  }
-)(withRouter(BrowsePage));
+export default connect(mapStateToProps, {
+  authenticateUser,
+  getCategories,
+  getCharts,
+  logoutUser,
+  getNewReleases,
+  getUserSavedTracks,
+  getUserSavedAlbums,
+  getUserFollowedArtists
+})(withRouter(BrowsePage));
