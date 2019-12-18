@@ -11,7 +11,8 @@ import {
   GET_USER_TOP_ARTISTS,
   GET_CATEGORIES,
   GET_NEW_RELEASES,
-  GET_RECOMMENDATIONS,
+  GET_RELATED_ARTISTS,
+  GET_RELATED_TRACKS,
   GET_USER_FOLLOWED_ARTISTS,
   GET_USER_SAVED_TRACKS,
   GET_USER_SAVED_ALBUMS,
@@ -19,8 +20,7 @@ import {
   SET_LOADING,
   GET_RECENTLY_PLAYED,
   GET_CATEGORIES_DETAIL,
-  GET_CHARTS,
-  GET_RELATED_ARTISTS
+  GET_CHARTS
 } from "../actions/types";
 import isEmpty from "../utils/is-empty";
 
@@ -178,7 +178,7 @@ export const getUserTopArtists = () => dispatch => {
   dispatch(setLoading());
 
   axios
-    .get(`${baseURL}/me/top/tracks`)
+    .get(`${baseURL}/me/top/artists`)
     .then(res => {
       dispatch({
         type: GET_USER_TOP_ARTISTS,
@@ -190,38 +190,6 @@ export const getUserTopArtists = () => dispatch => {
         type: GET_ERRORS,
         payload: err
       });
-    });
-};
-
-export const getRecommendation = (
-  keywords,
-  seedArtists = [],
-  seedTracks = [],
-  country = "US"
-) => async dispatch => {
-  dispatch(setLoading());
-  let url = "";
-  if (!isEmpty(seedArtists)) {
-    url += `seed_artists=${seedArtists.join(",")}`;
-  }
-  if (url.length > 0) url += "&";
-  if (!isEmpty(seedTracks)) {
-    url += `seed_tracks=${seedTracks.join(",")}`;
-  }
-  url += `&market=${country}`;
-  await axios
-    .get(`${baseURL}/recommendations?${url}`)
-    .then(async res => {
-      await dispatch({
-        type: GET_RECOMMENDATIONS,
-        payload: {
-          keywords,
-          results: res.data.tracks
-        }
-      });
-    })
-    .catch(err => {
-      dispatch({ type: GET_ERRORS, payload: err });
     });
 };
 
@@ -373,19 +341,11 @@ export const getCharts = () => async dispatch => {
           //check if it is Top 50 category
           if (item.name.includes("Top 50") && !topChartKeys.includes(item.name)) {
             //get a full playlists
-            // await axios
-            //   .get(`${baseURL}/playlists/${item.id}`)
-            //   .then(res => chart.topCharts.push(res.data))
-            //   .catch(err => console.log(err));
             chart.topCharts.push(item);
             topChartKeys.push(item.name);
           }
           //check if it is Viral 50
           if (item.name.includes("Viral 50") && !viralChartsKeys.includes(item.name)) {
-            // await axios
-            //   .get(`${baseURL}/playlists/${item.id}`)
-            //   .then(res => chart.viralCharts.push(res.data))
-            //   .catch(err => console.log(err));
             chart.viralCharts.push(item);
             viralChartsKeys.push(item.name);
           }
@@ -399,11 +359,48 @@ export const getCharts = () => async dispatch => {
   });
 };
 
-export const getRelatedArtists = id => dispatch => {
+export const getRelatedArtists = (keywords = [], seedArtists = [], country = "US") => async dispatch => {
   dispatch(setLoading());
+  let url = "";
+  if (!isEmpty(seedArtists)) {
+    url += `seed_artists=${seedArtists.join(",")}`;
+  }
+  url += `&market=${country}`;
+  await axios
+    .get(`${baseURL}/recommendations?${url}`)
+    .then(async res => {
+      await dispatch({
+        type: GET_RELATED_ARTISTS,
+        payload: {
+          keywords,
+          results: res.data.tracks
+        }
+      });
+    })
+    .catch(err => {
+      dispatch({ type: GET_ERRORS, payload: err });
+    });
+};
 
-  axios
-    .get(`${baseURL}/artists/${id}/related-artists`)
-    .then(res => dispatch({ type: GET_RELATED_ARTISTS, payload: res.data.artists }))
-    .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
+export const getRelatedTracks = (keywords = [], seedTracks = [], country = "US") => async dispatch => {
+  dispatch(setLoading());
+  let url = "";
+  if (!isEmpty(seedTracks)) {
+    url += `seed_tracks=${seedTracks.join(",")}`;
+  }
+  url += `&market=${country}`;
+  await axios
+    .get(`${baseURL}/recommendations?${url}`)
+    .then(async res => {
+      await dispatch({
+        type: GET_RELATED_TRACKS,
+        payload: {
+          keywords,
+          results: res.data.tracks
+        }
+      });
+    })
+    .catch(err => {
+      dispatch({ type: GET_ERRORS, payload: err });
+    });
 };

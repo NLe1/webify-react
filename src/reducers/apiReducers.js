@@ -7,7 +7,8 @@ import {
   GET_USER_TOP_ARTISTS,
   GET_CATEGORIES,
   GET_NEW_RELEASES,
-  GET_RECOMMENDATIONS,
+  GET_RELATED_ARTISTS,
+  GET_RELATED_TRACKS,
   GET_USER_FOLLOWED_ARTISTS,
   GET_USER_SAVED_TRACKS,
   GET_USER_SAVED_ALBUMS,
@@ -16,8 +17,7 @@ import {
   GET_ARTISTS,
   GET_RECENTLY_PLAYED,
   GET_CATEGORIES_DETAIL,
-  GET_CHARTS,
-  GET_RELATED_ARTISTS
+  GET_CHARTS
 } from "../actions/types";
 
 const initialState = {
@@ -31,7 +31,8 @@ const initialState = {
   userTopArtists: [],
   categoriesLists: [],
   newReleaseLists: [],
-  recommendationLists: [],
+  userRelatedArtists: [],
+  userRelatedTracks: [],
   userFollowedArtists: [],
   userSavedTracks: [],
   userSavedAlbums: [],
@@ -45,7 +46,6 @@ const initialState = {
     topCharts: [],
     viralCharts: []
   },
-  relatedArtists: [],
   isLoading: false
 };
 
@@ -117,10 +117,16 @@ export default function(state = initialState, action) {
         categoriesLists: action.payload,
         isLoading: false
       };
-    case GET_RECOMMENDATIONS:
+    case GET_RELATED_ARTISTS:
       return {
         ...state,
-        recommendationLists: [...state.recommendationLists, action.payload],
+        userRelatedArtists: [...state.userRelatedArtists, action.payload],
+        isLoading: false
+      };
+    case GET_RELATED_TRACKS:
+      return {
+        ...state,
+        userRelatedTracks: [...state.userRelatedTracks, action.payload],
         isLoading: false
       };
     case GET_USER_FOLLOWED_ARTISTS:
@@ -158,8 +164,6 @@ export default function(state = initialState, action) {
         charts: action.payload,
         isLoading: false
       };
-    case GET_RELATED_ARTISTS:
-      return { ...state, relatedArtists: action.payload, isLoading: false };
     default:
       return state;
   }

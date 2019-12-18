@@ -14,6 +14,7 @@ import CategoryPage from "./component/layout/browsepage/categorypage/CategoryPag
 import Genres from "./component/layout/browsepage/Genres";
 import Discovers from "./component/layout/browsepage/Discovers";
 import Charts from "./component/layout/browsepage/Charts";
+import TopArtistsAndTracks from "./component/layout/browsepage/TopArtistsAndTracks";
 
 class App extends Component {
   render() {
@@ -34,6 +35,11 @@ class App extends Component {
                 <Route exact path="/dashboard/browse" component={BrowsePage} />
                 <Route exact path="/dashboard/browse/genres" component={Genres} />
                 <Route exact path="/dashboard/browse/discovers" component={Discovers} />
+                <Route
+                  exact
+                  path="/dashboard/browse/newArtistsAndTracks"
+                  component={TopArtistsAndTracks}
+                />
                 <Route exact path="/dashboard/browse/charts" component={Charts} />
                 <Route exact path="/dashboard/browse/genres/:id" component={CategoryPage} />
               </div>

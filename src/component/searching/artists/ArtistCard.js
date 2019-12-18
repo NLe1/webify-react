@@ -5,6 +5,7 @@ import isEmpty from "../../../utils/is-empty";
 export default class ArtistCard extends Component {
   render() {
     const { artist } = this.props;
+    console.log(artist);
     return (
       <a href={artist.external_urls.spotify} style={{ textDecoration: "none", color: "black" }}>
         <div className="card mr-2 mt-0" style={{ width: "18rem" }}>

@@ -12,7 +12,7 @@ class FeatureList extends Component {
           Discover Weekly
         </h6>
         <hr style={{ borderColor: "white" }} />
-        <PlaylistCard featuredPlaylists={featuredPlaylists} />
+        {featuredPlaylists ? <PlaylistCard featuredPlaylists={featuredPlaylists} /> : null}
       </div>
     );
   }

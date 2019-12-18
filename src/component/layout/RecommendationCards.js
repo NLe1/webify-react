@@ -1,11 +1,19 @@
 import React, { Component, Fragment } from "react";
 
 import isEmpty from "../../utils/is-empty";
+import getRandom from "../../utils/getRandom";
+import { GridLoader } from "react-spinners";
 
 export default class RecommendationCards extends Component {
-  getRandomInt = max => {
-    return Math.floor(Math.random() * Math.floor(max));
-  };
+  constructor(props) {
+    super(props);
+    this.state = { loading: true };
+  }
+
+  componentDidMount() {
+    this.setState({ loading: false });
+  }
+
   render() {
     const { list } = this.props;
     const keywords = [
@@ -14,10 +22,12 @@ export default class RecommendationCards extends Component {
       "Because you listened to: ",
       "Because you like: "
     ];
-    return (
+    return this.state.loading ? (
+      <GridLoader color={"green"} />
+    ) : (
       <Fragment>
-        <h6 className="mt-4  pb-0 mb-0" style={{ fontWeight: "bold" }}>
-          {keywords[this.getRandomInt(4)]} {list.keywords.join(", ")}
+        <h6 className="mt-4 pb-0 mb-0" style={{ fontWeight: "bold" }}>
+          {keywords[getRandom() % 4]} {list.keywords.join(", ")}
         </h6>
         <hr style={{ borderColor: "white" }} />
         <div

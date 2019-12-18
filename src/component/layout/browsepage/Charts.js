@@ -45,6 +45,11 @@ class Charts extends Component {
               Discovers
             </Link>
           </h5>
+          <h5 className="mr-4  pb-0 mb-0 d-inline ">
+            <Link to="/dashboard/browse/newArtistsAndTracks" style={{ color: "#d1cdcd" }}>
+            Top Artists And Tracks
+            </Link>
+          </h5>
           <h6 className="mt-4 pb-0 mb-0" style={{ fontWeight: "bold" }}>
             Featured Charts
           </h6>

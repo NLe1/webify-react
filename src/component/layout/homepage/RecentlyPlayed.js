@@ -21,7 +21,7 @@ class RecentlyPlayed extends Component {
                 <a
                   key={played_at}
                   href={track.external_urls.spotify}
-                  style={{ textDecoration: "none", color: "black" }}
+                  style={{ textDecoration: "none", color: "black", marginBottom: "0px" }}
                 >
                   <div className="card mr-2 mt-0" style={{ width: "18rem" }}>
                     <img

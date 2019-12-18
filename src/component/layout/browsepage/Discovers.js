@@ -4,35 +4,15 @@ import { Link, withRouter } from "react-router-dom";
 import NewReleases from "../../layout/homepage/NewReleases";
 
 import isEmpty from "../../../utils/is-empty";
-import { getRelatedArtists, getRecommendation } from "../../../actions/apiActions";
+import { getRelatedArtists, getRelatedTracks } from "../../../actions/apiActions";
 import RecommendationCards from "../RecommendationCards";
 
 class Discovers extends Component {
   constructor(props) {
     super(props);
-    const { userFollowedArtists, newReleaseLists, userSavedTracks, userSavedAlbums } = this.props.api;
-    if (
-      isEmpty(userFollowedArtists) &&
-      isEmpty(newReleaseLists) &&
-      isEmpty(userSavedAlbums) &&
-      isEmpty(userSavedTracks)
-    ) {
+    const { userRelatedArtists, userRelatedTracks } = this.props.api;
+    if (isEmpty(userRelatedArtists) || isEmpty(userRelatedTracks)) {
       this.props.history.push("/dashboard/browse");
-    } else {
-      //get random user followed artists
-      for (let i = 0; i < 3; i++) {
-        let rand = this.getRandomInt(userFollowedArtists.length);
-        this.props.getRecommendation([userFollowedArtists[rand].name], [userFollowedArtists[rand].id]);
-      }
-      //get random user saved tracks
-      for (let i = 0; i < 2; i++) {
-        let rand = this.getRandomInt(userFollowedArtists.length);
-        this.props.getRecommendation(
-          [userSavedTracks[rand].track.name],
-          [],
-          [userSavedTracks[rand].track.id]
-        );
-      }
     }
   }
 
@@ -41,7 +21,7 @@ class Discovers extends Component {
   };
 
   render() {
-    const { recommendationLists, newReleaseLists } = this.props.api;
+    const { userRelatedTracks, userRelatedArtists, newReleaseLists } = this.props.api;
     return (
       <div>
         <div className="container">
@@ -63,9 +43,17 @@ class Discovers extends Component {
               Discovers
             </Link>
           </h5>
+          <h5 className="mr-4  pb-0 mb-0 d-inline ">
+            <Link to="/dashboard/browse/newArtistsAndTracks" style={{ color: "#d1cdcd" }}>
+              Top Artists And Tracks
+            </Link>
+          </h5>
           {!isEmpty(newReleaseLists) ? <NewReleases /> : null}
-          {!isEmpty(recommendationLists)
-            ? recommendationLists.map(list => <RecommendationCards key={list.keywords} list={list} />)
+          {!isEmpty(userRelatedArtists)
+            ? userRelatedArtists.map(list => <RecommendationCards key={list.keywords} list={list} />)
+            : null}
+          {!isEmpty(userRelatedTracks)
+            ? userRelatedTracks.map(list => <RecommendationCards key={list.keywords} list={list} />)
             : null}
         </div>
       </div>
@@ -79,7 +67,4 @@ const mapStateToProps = state => ({
   errors: state.errors
 });
 
-export default connect(
-  mapStateToProps,
-  { getRelatedArtists, getRecommendation }
-)(withRouter(Discovers));
+export default connect(mapStateToProps, { getRelatedArtists, getRelatedTracks })(withRouter(Discovers));

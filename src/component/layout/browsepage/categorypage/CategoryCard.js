@@ -21,10 +21,12 @@ export default class CategoryCard extends Component {
               alt=""
             />
             <div className="card-body">
-              <h5 className="card-title">{playlist.name}</h5>
+              <h5 className="card-title">
+                {playlist.name.length > 50 ? playlist.name.substring(0, 50) + "..." : playlist.name}
+              </h5>
               <p className="card-text">
-                {playlist.description.length > 100
-                  ? playlist.description.substring(0, 100) + "..."
+                {playlist.description.length > 50
+                  ? playlist.description.substring(0, 50) + "..."
                   : playlist.description}
               </p>
             </div>
