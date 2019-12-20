@@ -1,81 +1,62 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import { GridLoader } from "react-spinners";
 
-import { authenticateUser } from "../../../../actions/authActions";
+import { authenticateUser, logoutUser } from "../../../../actions/authActions";
 import { getCategoriesDetail } from "../../../../actions/apiActions";
 import isEmpty from "../../../../utils/is-empty";
 import CategoryCard from "./CategoryCard";
 
 class CategoryPage extends Component {
-  state = {
-    category: {},
-    playlists: []
-  };
-
   constructor(props) {
     super(props);
     if (localStorage.getItem("jwtToken")) {
       console.log("authenticating...");
       this.props.authenticateUser(localStorage.getItem("jwtToken"));
     }
-    if (!isEmpty(this.props.errors)) {
-      this.props.logoutUser();
-    }
-  }
-
-  async componentDidMount() {
+    this.state = { loading: true };
     const category_id = this.props.history.location.pathname.split("/").pop();
-    const { playlists, category } = this.props.api.categoriesDetails;
-    if (isEmpty(playlists) && isEmpty(category)) {
-      await this.props.getCategoriesDetail(category_id);
+    this.props.getCategoriesDetail(category_id);
+    if (!isEmpty(this.props.errors.error)) {
+      if (this.props.errors.error.status === "401" || this.props.errors.error.status == 401) {
+        this.props.logoutUser();
+      }
     }
   }
 
-  async componentDidUpdate(prevProps, prevState) {
-    const { playlists, category } = await this.props.api.categoriesDetails;
-
-    // console.log(Object.keys(playlists));
-    // console.log(playlists.length);
-    setTimeout(() => {
-      if (!isEmpty(playlists) && isEmpty(this.state.playlists)) {
-        // console.log("updateed");
-        this.setState({ playlists });
-      }
-      if (!isEmpty(category) && isEmpty(prevState.category)) {
-        this.setState({ category });
-      }
-    }, 600);
-  }
-
-  componentWillUnmount() {
-    this.props.getCategoriesDetail(null);
+  componentWillReceiveProps() {
+    const { isLoading } = this.props.api;
+    const { category, playlists } = this.props.api.categoriesDetails;
+    if (!isEmpty(category) || !isEmpty(playlists)) {
+      this.setState({ loading: false });
+    } else if (!isLoading) {
+      const category_id = this.props.history.location.pathname.split("/").pop();
+      this.props.getCategoriesDetail(category_id);
+    }
   }
 
   render() {
-    const { category, playlists } = this.state;
-    const { isLoading } = this.props.api;
+    const { category, playlists } = this.props.api.categoriesDetails;
     return (
       <div>
-        {!isEmpty(category) && !isLoading ? (
+        {!this.state.loading ? (
           <div>
-            <h1 className="display-4 m-4" style={{ fontWeight: "bold" }}>
+            <h3 className="m-4" style={{ fontWeight: "bold" }}>
               {category.name}
-            </h1>
+            </h3>
             <h5 className="mt-4 ml-4 pl-2 ml-4 pb-0 mb-0">Popular playlists</h5>
             <hr style={{ marginLeft: "40px", borderColor: "white" }} />
             <div className="mx-3 px-3">
               <div className="row">
-                {playlists && !isLoading
-                  ? playlists.map(playlist => <CategoryCard key={playlist.id} playlist={playlist} />)
-                  : null}
+                {playlists.map(playlist => (
+                  <CategoryCard key={playlist.id} playlist={playlist} />
+                ))}
               </div>
             </div>
           </div>
         ) : (
-          <h1 className="display-4 m-4" style={{ fontWeight: "bold" }}>
-            Loading...
-          </h1>
+          <GridLoader color={"green"} />
         )}
       </div>
     );
@@ -88,7 +69,6 @@ const mapStateToProps = state => ({
   errors: state.errors
 });
 
-export default connect(
-  mapStateToProps,
-  { authenticateUser, getCategoriesDetail }
-)(withRouter(CategoryPage));
+export default connect(mapStateToProps, { authenticateUser, getCategoriesDetail, logoutUser })(
+  withRouter(CategoryPage)
+);

@@ -3,8 +3,10 @@ import axios from "axios";
 import {
   GET_SONGS,
   GET_PLAYLISTS,
+  GET_PLAYLIST,
   GET_ALBUMS,
   GET_ARTISTS,
+  GET_ARTIST_ALBUM,
   GET_USER_PLAYLISTS,
   GET_FEATURED_PLAYLISTS,
   GET_USER_TOP_TRACKS,
@@ -20,7 +22,10 @@ import {
   SET_LOADING,
   GET_RECENTLY_PLAYED,
   GET_CATEGORIES_DETAIL,
-  GET_CHARTS
+  GET_CHARTS,
+  GET_ALBUM,
+  GET_ARTIST,
+  GET_RECOMMEND_ARTIST
 } from "../actions/types";
 import isEmpty from "../utils/is-empty";
 
@@ -69,6 +74,26 @@ export const searchArtists = q => dispatch => {
     });
 };
 
+export const getArtistAlbum = (id, name) => async dispatch => {
+  dispatch(setLoading());
+  if (id === undefined) {
+    dispatch({ type: GET_ARTIST_ALBUM, payload: [] });
+  } else {
+    await axios
+      .get(`${baseURL}/artists/${id}/albums`)
+      .then(res =>
+        dispatch({
+          type: GET_ARTIST_ALBUM,
+          payload: {
+            name,
+            album: res.data
+          }
+        })
+      )
+      .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
+  }
+};
+
 export const searchAlbums = q => dispatch => {
   dispatch(setLoading());
   axios
@@ -89,7 +114,6 @@ export const searchAlbums = q => dispatch => {
 
 export const searchPlaylists = q => dispatch => {
   dispatch(setLoading());
-
   axios
     .get(`${baseURL}/search/?q=${q}&type=playlist`)
     .then(res => {
@@ -210,9 +234,6 @@ export const getCategories = (country = "US") => dispatch => {
   axios
     .get(`${baseURL}/browse/categories?country=${country}&limit=50`)
     .then(res => {
-      // res.data.categories.items.forEach(item => {
-      //   dispatch(getCategoriesDetail(item.id, item));
-      // });
       dispatch({
         type: GET_CATEGORIES,
         payload: res.data.categories.items
@@ -224,6 +245,61 @@ export const getCategories = (country = "US") => dispatch => {
         payload: err
       })
     );
+};
+
+//get a playlist based on id
+export const getPlaylist = id => dispatch => {
+  dispatch(setLoading());
+  if (id === undefined) {
+    dispatch({ type: GET_PLAYLIST, payload: {} });
+  }else{
+    axios
+    .get(`${baseURL}/playlists/${id}`)
+    .then(res => dispatch({ type: GET_PLAYLIST, payload: res.data }))
+    .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
+  }
+ 
+};
+
+//get an album based on id
+export const getAlbum = id => dispatch => {
+  dispatch(setLoading());
+  if (id === undefined) {
+    dispatch({ type: GET_ALBUM, payload: [] });
+  } else {
+    axios
+      .get(`${baseURL}/albums/${id}`)
+      .then(res => dispatch({ type: GET_ALBUM, payload: res.data }))
+      .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
+  }
+};
+
+//get an artist based on id
+export const getArtist = id => dispatch => {
+  dispatch(setLoading());
+  if (id === undefined) {
+    dispatch({ type: GET_ARTIST, payload: {} });
+  } else {
+    axios
+      .get(`${baseURL}/artists/${id}`)
+      .then(res => dispatch({ type: GET_ARTIST, payload: res.data }))
+      .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
+  }
+};
+
+//get an relatedArtists on current artist id
+export const getRecommendArtist = id => dispatch => {
+  dispatch(setLoading());
+  if (id === undefined) {
+    dispatch({ type: GET_RECOMMEND_ARTIST, payload: [] });
+  } else {
+    axios
+      .get(`${baseURL}/artists/${id}/related-artists`)
+      .then(res => {
+        dispatch({ type: GET_RECOMMEND_ARTIST, payload: res.data.artists });
+      })
+      .catch(err => dispatch({ type: GET_ERRORS, payload: err }));
+  }
 };
 
 //get playlists from category_id
@@ -245,16 +321,8 @@ export const getCategoriesDetail = category_id => async dispatch => {
   };
   await axios
     .get(`${baseURL}/browse/categories/${category_id}/playlists`)
-    .then(async res => {
-      await res.data.playlists.items.forEach(
-        async item =>
-          await axios
-            .get(`${baseURL}/playlists/${item.id}`)
-            .then(async res => {
-              await newRes["playlists"].push(res.data);
-            })
-            .catch(err => console.log(err))
-      );
+    .then(res => {
+      newRes.playlists = res.data.playlists.items;
     })
     .catch(err =>
       dispatch({
@@ -264,8 +332,8 @@ export const getCategoriesDetail = category_id => async dispatch => {
     );
   await axios
     .get(`${baseURL}/browse/categories/${category_id}`)
-    .then(async res => {
-      newRes["category"] = await res.data;
+    .then(res => {
+      newRes.category = res.data;
     })
     .catch(err =>
       dispatch({
@@ -273,6 +341,7 @@ export const getCategoriesDetail = category_id => async dispatch => {
         payload: err
       })
     );
+
   dispatch({
     type: GET_CATEGORIES_DETAIL,
     payload: newRes

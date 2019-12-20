@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 class NewRealeases extends Component {
   render() {
@@ -18,9 +19,8 @@ class NewRealeases extends Component {
         >
           {newReleaseLists
             ? newReleaseLists.map(item => (
-                <a
-                  key={item.id}
-                  href={item.external_urls.spotify}
+                <Link
+                  to={`/dashboard/albums/${item.id}`}
                   style={{ textDecoration: "none", color: "black" }}
                 >
                   <div className="card mr-2 mt-0" style={{ width: "18rem" }}>
@@ -39,7 +39,7 @@ class NewRealeases extends Component {
                       <p className="card-text">Release: {item.release_date}</p>
                     </div>
                   </div>
-                </a>
+                </Link>
               ))
             : null}
         </div>

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 import isEmpty from "../../../utils/is-empty";
 
@@ -6,7 +7,10 @@ export default class PlaylistCard extends Component {
   render() {
     const { playlist } = this.props;
     return (
-      <a href={playlist.external_urls.spotify} style={{ textDecoration: "none", color: "black" }}>
+      <Link
+        to={`/dashboard/playlists/${playlist.id}`}
+        style={{ textDecoration: "none", color: "black" }}
+      >
         <div className="card mr-2 mt-0" style={{ width: "18rem" }}>
           <img
             src={
@@ -22,7 +26,7 @@ export default class PlaylistCard extends Component {
             <div className="card-footer text-muted">{playlist.tracks.total + " TRACKS"}</div>
           </div>
         </div>
-      </a>
+      </Link>
     );
   }
 }

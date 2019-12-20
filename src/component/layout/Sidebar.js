@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
 
-import { getUserPlaylists } from "../../actions/apiActions";
+import { getUserPlaylists, getPlaylist } from "../../actions/apiActions";
 import { authenticateUser } from "../../actions/authActions";
 import isEmpty from "../../utils/is-empty";
 
@@ -20,6 +20,10 @@ class Sidebar extends Component {
   componentDidMount() {
     if (isEmpty(this.props.errors)) this.props.getUserPlaylists();
   }
+
+  handle = () => {
+    this.props.getPlaylist();
+  };
 
   render() {
     const { userPlaylists } = this.props.api;
@@ -65,12 +69,13 @@ class Sidebar extends Component {
             {userPlaylists
               ? userPlaylists.map(playlist => (
                   <p key={playlist.id} className=" pb-1">
-                    <a
-                      href={playlist.external_urls.spotify}
+                    <Link
+                      onClick={this.handle}
+                      to={`/dashboard/playlists/${playlist.id}`}
                       style={{ textDecoration: "none", color: "#d1cdcd" }}
                     >
                       {playlist.name}
-                    </a>
+                    </Link>
                   </p>
                 ))
               : null}
@@ -87,7 +92,6 @@ const mapStateToProps = state => ({
   errors: state.errors
 });
 
-export default connect(
-  mapStateToProps,
-  { getUserPlaylists, authenticateUser }
-)(withRouter(Sidebar));
+export default connect(mapStateToProps, { getUserPlaylists, authenticateUser, getPlaylist })(
+  withRouter(Sidebar)
+);

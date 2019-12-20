@@ -1,15 +1,12 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 export default class CategoryCard extends Component {
   render() {
     const { playlist } = this.props;
     return (
       <div className="my-3 col-lg-3 col-md-4 col-sm-6">
-        <a
-          href={playlist.external_urls.spotify}
-          alt=""
-          style={{ color: "black", textDecoration: "none" }}
-        >
+        <Link to={`/dashboard/playlists/${playlist.id}`} style={{ color: "white" }}>
           <div className="card">
             <img
               className="card-img-top"
@@ -21,18 +18,18 @@ export default class CategoryCard extends Component {
               alt=""
             />
             <div className="card-body">
-              <h5 className="card-title">
+              <h5 className="card-title" style={{ color: "black" }}>
                 {playlist.name.length > 50 ? playlist.name.substring(0, 50) + "..." : playlist.name}
               </h5>
-              <p className="card-text">
+              <p className="card-text" style={{ color: "black" }}>
                 {playlist.description.length > 50
                   ? playlist.description.substring(0, 50) + "..."
                   : playlist.description}
               </p>
             </div>
-            <div className="card-footer">{playlist.followers.total} FOLLOWERS</div>
+            {/* <div className="card-footer">{playlist.followers.total} FOLLOWERS</div> */}
           </div>
-        </a>
+        </Link>
       </div>
     );
   }

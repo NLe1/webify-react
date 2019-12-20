@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 export default class ArtistCarousel extends Component {
   render() {
     const { artists } = this.props;
@@ -20,17 +21,18 @@ export default class ArtistCarousel extends Component {
           {artists
             ? artists.map((artist, index) => (
                 <div className={index === 0 ? "carousel-item active" : "carousel-item"} key={artist.id}>
-                  <img
-                    src={artist.images[0].url}
-                    className="d-center"
-                    alt={artist.genres.join(",")}
-                    style={{
-                      maxHeight: "640px",
-                      //   height: "360px",
-                      margin: "auto"
-                      //   backgroundSize: "cover"
-                    }}
-                  />
+                  <Link to={`/dashboard/artists/${artist.id}`}>
+                    <img
+                      src={artist.images[0].url}
+                      className="d-center"
+                      alt={artist.genres.join(",")}
+                      style={{
+                        maxHeight: "640px",
+                        margin: "auto"
+                      }}
+                    />
+                  </Link>
+
                   <div className="carousel-caption d-none d-md-block">
                     <h3 style={{ textShadow: "black 0px 0px 10px" }}>{artist.name}</h3>
                     <h4 style={{ textShadow: "black 0px 0px 10px" }}>

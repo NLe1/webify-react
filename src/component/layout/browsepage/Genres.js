@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter, Link } from "react-router-dom";
-
+import { GridLoader } from "react-spinners";
 import CategoriesCard from "./CategoriesCard";
 import isEmpty from "../../../utils/is-empty";
 
@@ -15,7 +15,7 @@ class Genres extends Component {
     const { categoriesLists } = this.props.api;
     return (
       <div className="container">
-        <h1 className="display-4" style={{ fontWeight: "bold" }}>
+        {/* <h1 className="display-4" style={{ fontWeight: "bold" }}>
           BROWSE
         </h1>
         <h5 className="mr-4  pb-0 mb-0 d-inline ">
@@ -37,7 +37,7 @@ class Genres extends Component {
           <Link to="/dashboard/browse/newArtistsAndTracks" style={{ color: "#d1cdcd" }}>
             Top Artists And Tracks
           </Link>
-        </h5>
+        </h5> */}
         <h6 className="mt-4  pb-0 mb-0" style={{ fontWeight: "bold" }}>
           Genres & Moods
         </h6>
@@ -47,9 +47,7 @@ class Genres extends Component {
           {!isEmpty(categoriesLists) ? (
             categoriesLists.map(category => <CategoriesCard key={category.id} category={category} />)
           ) : (
-            <h1 className="display-4 m-4" style={{ fontWeight: "bold" }}>
-              Loading...
-            </h1>
+            <GridLoader color={"green"} />
           )}
         </div>
       </div>

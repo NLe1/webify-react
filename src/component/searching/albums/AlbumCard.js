@@ -1,12 +1,17 @@
 import React, { Component } from "react";
-
+import { BrowserRouter as router } from "react-router-dom";
+import { Link } from "react-router-dom";
 import isEmpty from "../../../utils/is-empty";
 
 export default class AlbumCard extends Component {
+  reloadRoute = id => {
+    router.push({ pathname: "/empty" });
+    router.replace({ pathname: `/dashboard/albums/${id}` });
+  };
   render() {
     const { album } = this.props;
     return (
-      <a href={album.external_urls.spotify} style={{ textDecoration: "none", color: "black" }}>
+      <Link to={`/dashboard/albums/${album.id}`} style={{ textDecoration: "none", color: "black" }}>
         <div className="card mr-2 mt-0" style={{ width: "18rem" }}>
           <img
             src={
@@ -23,7 +28,7 @@ export default class AlbumCard extends Component {
             <div className="card-footer text-muted">{album.total_tracks + " TRACKS"}</div>
           </div>
         </div>
-      </a>
+      </Link>
     );
   }
 }

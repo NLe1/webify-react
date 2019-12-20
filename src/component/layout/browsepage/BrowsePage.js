@@ -15,8 +15,10 @@ class BrowsePage extends Component {
       console.log("authenticating...");
       this.props.authenticateUser(localStorage.getItem("jwtToken"));
     }
-    if (!isEmpty(this.props.errors)) {
-      this.props.logoutUser();
+    if (!isEmpty(this.props.errors.error)) {
+      if (this.props.errors.error.status === "401" || this.props.errors.error.status == 401) {
+        this.props.logoutUser();
+      }
     }
     if (!isEmpty(this.props.api.categoriesLists)) {
       this.props.history.push("/dashboard/browse/genres");
@@ -58,7 +60,7 @@ class BrowsePage extends Component {
                 Top Artists And Tracks
               </Link>
             </h5>
-            <hr style={{ borderColor: "white" }} />
+            {/* <hr style={{ borderColor: "white" }} /> */}
           </div>
         )}
       </Fragment>

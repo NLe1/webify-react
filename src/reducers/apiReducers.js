@@ -15,10 +15,16 @@ import {
   SET_LOADING,
   GET_ALBUMS,
   GET_ARTISTS,
+  GET_PLAYLIST,
   GET_RECENTLY_PLAYED,
   GET_CATEGORIES_DETAIL,
-  GET_CHARTS
+  GET_CHARTS,
+  GET_ARTIST,
+  GET_ARTIST_ALBUM,
+  GET_ALBUM,
+  GET_RECOMMEND_ARTIST
 } from "../actions/types";
+import isEmpty from "../utils/is-empty";
 
 const initialState = {
   songs: [],
@@ -40,6 +46,15 @@ const initialState = {
   categoriesDetails: {
     playlists: [],
     category: {}
+  },
+  currentPlaylist: {},
+  currentAlbum: {
+    relatedAlbums: [],
+    currentAlbum: []
+  },
+  currentArtist: {
+    currentArtist: {},
+    relatedArtists: []
   },
   charts: {
     featuredCharts: [],
@@ -163,6 +178,53 @@ export default function(state = initialState, action) {
         ...state,
         charts: action.payload,
         isLoading: false
+      };
+    case GET_PLAYLIST:
+      return {
+        ...state,
+        isLoading: false,
+        currentPlaylist: action.payload
+      };
+    case GET_ALBUM:
+      return {
+        ...state,
+        isLoading: false,
+        currentAlbum: {
+          ...state.currentAlbum,
+          currentAlbum: isEmpty(action.payload)
+            ? []
+            : [...state.currentAlbum.currentAlbum, action.payload]
+        }
+      };
+    case GET_ARTIST_ALBUM:
+      return {
+        ...state,
+        isLoading: false,
+        currentAlbum: {
+          ...state.currentAlbum,
+          relatedAlbums: isEmpty(action.payload)
+            ? []
+            : [...state.currentAlbum.relatedAlbums, action.payload]
+        }
+      };
+    case GET_ARTIST:
+      return {
+        ...state,
+        isLoading: false,
+        currentArtist: {
+          ...state.currentArtist,
+          currentArtist: isEmpty(action.payload) ? {} : action.payload
+        }
+      };
+
+    case GET_RECOMMEND_ARTIST:
+      return {
+        ...state,
+        isLoading: false,
+        currentArtist: {
+          ...state.currentArtist,
+          relatedArtists: isEmpty(action.payload) ? [] : action.payload
+        }
       };
     default:
       return state;

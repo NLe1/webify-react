@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-
+import { Link } from "react-router-dom";
 import isEmpty from "../../../utils/is-empty";
 
 export default class ArtistCard extends Component {
   render() {
     const { artist } = this.props;
-    console.log(artist);
     return (
-      <a href={artist.external_urls.spotify} style={{ textDecoration: "none", color: "black" }}>
+      <Link to={`/dashboard/artists/${artist.id}`} style={{ textDecoration: "none", color: "black" }}>
         <div className="card mr-2 mt-0" style={{ width: "18rem" }}>
           <img
             src={
@@ -26,7 +25,7 @@ export default class ArtistCard extends Component {
             <div className="card-footer text-muted">{artist.followers.total} FOLLOWERS</div>
           </div>
         </div>
-      </a>
+      </Link>
     );
   }
 }

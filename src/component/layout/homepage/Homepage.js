@@ -77,11 +77,14 @@ class Homepage extends Component {
     }
   }
 
-  componentDidMount() {}
-
-  componentDidUpdate() {
+  componentWillUpdate() {
     if (this.props.auth.access_token === null) {
       this.props.history.push("/");
+    }
+    if (!isEmpty(this.props.errors.error)) {
+      if (this.props.errors.error.status === "401" || this.props.errors.error.status == 401) {
+        this.props.logoutUser();
+      }
     }
     const {
       userRelatedArtists,
@@ -97,28 +100,18 @@ class Homepage extends Component {
       isEmpty(userRelatedTracks) &&
       !isLoading
     ) {
-      for (let i = 0; i < 2; i++) {
-        let index = getRandom();
-        this.props.getRelatedArtists([userFollowedArtists[index].name], [userFollowedArtists[index].id]);
-      }
-      for (let i = 0; i < 2; i++) {
-        let index = getRandom();
-        this.props.getRelatedTracks(
-          [userSavedTracks[index].track.name],
-          [userSavedTracks[index].track.id]
-        );
-      }
+      let index = getRandom();
+      this.props.getRelatedArtists([userFollowedArtists[index].name], [userFollowedArtists[index].id]);
+      index = getRandom();
+      this.props.getRelatedTracks(
+        [userSavedTracks[index].track.name],
+        [userSavedTracks[index].track.id]
+      );
     }
   }
 
   render() {
-    const {
-      userRecentlyPlayed,
-      newReleaseLists,
-      featuredPlaylists,
-      userRelatedArtists,
-      userRelatedTracks
-    } = this.props.api;
+    const { userRecentlyPlayed, newReleaseLists, featuredPlaylists } = this.props.api;
     return (
       <div className="container">
         <h1 className="display-4" style={{ fontWeight: "bold" }}>
